@@ -47,12 +47,12 @@ data["Criticidad"]=data["Criticidad"].apply(limpiar)
 data["Departamentos Responsables a Implementar"] = data["Departamentos Responsables a Implementar"].astype(str) 
 data["Departamentos Responsables a Implementar"]=data["Departamentos Responsables a Implementar"].apply(limpiar) 
 # Seleccionar las columnas relevantes para el modelo de árbol de decisión
-columns = ['Tipo de contrato', 'Segmento Mercado', 'Tipo de Alcance', 'Tipo de Hallazgo', 'Acciones Tomadas', 'Criticidad']
+columns = ['Tipo de contrato', 'Segmento Mercado', 'Tipo de Alcance',  'Acciones Tomadas', 'Causas', 'Tipo de Instalación','Departamentos Responsables a Implementar','Tema Ingenieria']
 # # Eliminar las filas que contengan valores nulos o faltantes
 # data = data.dropna(subset=columns)
 # Seleccionar las características (X) y las etiquetas (y)
 X = data[columns]
-y = data['Departamentos Responsables a Implementar']
+y = data['Estado']
 
 # Convertir características categóricas en variables dummy / codificación one-hot
 X = pd.get_dummies(X)
