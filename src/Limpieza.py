@@ -4,9 +4,9 @@ import pandas as pd
 from datetime import datetime
 import plotly.graph_objects as go
 import plotly.express as px
+from pathlib import Path
 
-
-data = pd.read_excel(r"F:\CAOBA\Technip-model\data\T.EN Colombia Reporte_Plano Lecciones Aprendidas.xlsx", sheet_name="confidencial")
+data = pd.read_excel("data/T.EN Colombia Reporte_Plano Lecciones Aprendidas.xlsx", sheet_name="confidencial")
 data['Fecha'] = pd.to_datetime(data['Fecha'])
 
 casos_anuales = data.groupby(data['Fecha'].dt.year).size()
