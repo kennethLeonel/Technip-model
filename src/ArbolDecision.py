@@ -11,6 +11,9 @@ import graphviz
 import re
 from pathlib import Path
 
+from sklearn import tree
+import matplotlib.pyplot as plt
+
 #cargar datos 
 data = pd.read_excel("data/T.EN Colombia Reporte_Plano Lecciones Aprendidas.xlsx", sheet_name="confidencial")
 print (data.head())
@@ -84,8 +87,6 @@ graph.render('Source', view=True)
 dot_file_path = Path('Source.gv')
 dot_file_path.write_text(dot_data)
 
-from sklearn import tree
-import matplotlib.pyplot as plt
 
 # # Crear una representación gráfica del árbol de decisión pero traba el computador
 # plt.figure(figsize=(15, 10))
