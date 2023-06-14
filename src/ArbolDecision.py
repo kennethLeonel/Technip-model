@@ -10,6 +10,8 @@ from sklearn.tree import export_graphviz
 import graphviz 
 import re
 from pathlib import Path
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 
 from sklearn import tree
 import matplotlib.pyplot as plt
@@ -53,7 +55,7 @@ columns = ['Tipo de contrato', 'Segmento Mercado', 'Tipo de Alcance',  'Acciones
 # Seleccionar las características (X) y las etiquetas (y)
 X = data[columns]
 y = data['Estado']
-
+# y =data['Tipo de Hallazgo']
 # Convertir características categóricas en variables dummy / codificación one-hot
 X = pd.get_dummies(X)
 
@@ -61,16 +63,34 @@ X = pd.get_dummies(X)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
 # Crear el clasificador del árbol de decisión
-clf = DecisionTreeClassifier()
+clf = DecisionTreeClassifier(max_depth=5)
 
 # Entrenar el modelo utilizando los datos de entrenamiento
 clf.fit(X_train, y_train)
+
+# Parameteros del modelo
+print(clf.get_params())
+
 
 # Realizar predicciones en el conjunto de prueba
 y_pred = clf.predict(X_test)
 
 # Evaluar la precisión del modelo
 print("Precisión:", metrics.accuracy_score(y_test, y_pred))
+
+# # Matriz de confusión
+# print(pd.crosstab(y_test, y_pred, rownames=['Real'], colnames=['Predicción'], margins=True))
+
+# Matriz de confusión
+
+# print (confusion_matrix(y_test, y_pred, labels=[0,1]))
+
+# Reporte de clasificación 
+print (classification_report(y_test,y_pred))
+
+#importancia de las características
+# print(X.columns)
+# print(clf.feature_importances_)
 
 #Parte visual del arbol
 # Generar el archivo DOT
