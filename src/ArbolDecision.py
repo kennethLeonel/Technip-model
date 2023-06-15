@@ -50,12 +50,14 @@ data["Departamentos Responsables a Implementar"] = data["Departamentos Responsab
 data["Departamentos Responsables a Implementar"]=data["Departamentos Responsables a Implementar"].apply(limpiar) 
 # Seleccionar las columnas relevantes para el modelo de árbol de decisión
 columns = ['Tipo de contrato', 'Segmento Mercado', 'Tipo de Alcance',  'Acciones Tomadas', 'Causas', 'Tipo de Instalación','Departamentos Responsables a Implementar','Tema Ingenieria']
+columnsV = ['var1', 'var2', 'var3', 'var4', 'var5', 'var6','var7','var8']
 # # Eliminar las filas que contengan valores nulos o faltantes
 # data = data.dropna(subset=columns)
 # Seleccionar las características (X) y las etiquetas (y)
 X = data[columns]
-y = data['Estado']
-# y =data['Tipo de Hallazgo']
+#y = data['Estado']
+y = data['Criticidad']
+#y =data['Tipo de Hallazgo']
 # Convertir características categóricas en variables dummy / codificación one-hot
 X = pd.get_dummies(X)
 
@@ -63,7 +65,7 @@ X = pd.get_dummies(X)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
 # Crear el clasificador del árbol de decisión
-clf = DecisionTreeClassifier(max_depth=5)
+clf = DecisionTreeClassifier(max_depth=5,criterion='entropy')
 
 # Entrenar el modelo utilizando los datos de entrenamiento
 clf.fit(X_train, y_train)
@@ -93,8 +95,31 @@ print (classification_report(y_test,y_pred))
 # print(clf.feature_importances_)
 
 #Parte visual del arbol
-# Generar el archivo DOT
-dot_data = export_graphviz(clf, out_file=None, feature_names=X.columns, class_names=y.unique(), filled=True, rounded=True)
+
+
+
+#dot_data = export_graphviz(clf, out_file=None, feature_names=X.columns, class_names=y.unique(), filled=True, rounded=True)
+#cambiar el feacture name por columnsV en el pdf
+dot_data = export_graphviz(clf, out_file=None, feature_names=["variable " + str(i+1) for i in range(len(X.columns))], class_names=y.unique(), filled=True, rounded=True, label='none')
+# Obtener los nombres de las características y sus valores
+feature_names = X.columns
+feature_values = X.values.T.tolist()
+
+# Crear una lista de variables genéricas
+variable_names = ["variable " + str(i+1) for i in range(len(feature_names))]
+
+# Crear un DataFrame que relacione características, valores y variables
+data = {"Feature": feature_names, "Value": feature_values, "Variable": variable_names}
+df = pd.DataFrame(data)
+
+# Mostrar el árbol de decisión
+print(dot_data)
+
+# Mostrar la tabla
+print(df)
+
+
+
 
 # Crear el objeto graphviz para visualizar el árbol
 graph = graphviz.Source(dot_data)
@@ -109,6 +134,6 @@ dot_file_path.write_text(dot_data)
 
 
 # # Crear una representación gráfica del árbol de decisión pero traba el computador
-# plt.figure(figsize=(15, 10))
-# tree.plot_tree(clf, feature_names=X.columns, class_names=clf.classes_, filled=True)
-# plt.show()
+plt.figure(figsize=(15, 10))
+tree.plot_tree(clf, feature_names=X.columns, class_names=clf.classes_, filled=True)
+plt.show()
