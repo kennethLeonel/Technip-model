@@ -76,6 +76,20 @@ print(clf.get_params())
 
 # Realizar predicciones en el conjunto de prueba
 y_pred = clf.predict(X_test)
+
+# guardar en un archivo csv el valor de X_test[0:1], solo se tiene en cuenta las columnas de X_test[0:1] que tienen valor 1 o True ya que son los datos de entrada
+cantidad_columnas = len(X_test[0:1].columns)
+columnas = X_test[0:1].columns
+nuevo = []
+for i in range(cantidad_columnas):
+    if str(X_test[0:1][columnas[i]].values[0]) == "True":
+        nuevo.append(columnas[i])
+        print(columnas[i], X_test[0:1][columnas[i]].values[0])
+nuevoD = pd.DataFrame(nuevo)   
+nuevoD.to_csv('data/X_test.csv', index=False)
+
+
+# print("Esta son las características",X_test[0:1])
 print("Esta es la prediccion",y_pred[0])
 # Obtener las características o caminos correspondientes a las predicciones
 # Obtener el índice del nodo que lleva a la predicción para X_test[0]
@@ -139,6 +153,6 @@ dot_file_path.write_text(dot_data)
 
 
 # # Crear una representación gráfica del árbol de decisión pero traba el computador
-plt.figure(figsize=(15, 10))
-tree.plot_tree(clf, feature_names=X.columns, class_names=clf.classes_, filled=True)
-plt.show()
+# plt.figure(figsize=(15, 10))
+# tree.plot_tree(clf, feature_names=X.columns, class_names=clf.classes_, filled=True)
+# plt.show()
