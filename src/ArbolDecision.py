@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
-
+import numpy as np
 from sklearn import tree
 import matplotlib.pyplot as plt
 
@@ -74,6 +74,25 @@ print(clf.get_params())
 
 # Realizar predicciones en el conjunto de prueba
 y_pred = clf.predict(X_test)
+print("Esta es la prediccion",y_pred[0])
+# Obtener las características o caminos correspondientes a las predicciones
+# Obtener el índice del nodo que lleva a la predicción para X_test[0]
+indice_nodo = clf.decision_path(X_test[0:1]).indices
+
+# Obtener las características y umbrales en el camino correcto para X_test[0]
+caracteristicas_camino = []
+for i, nodo in enumerate(indice_nodo):
+    caracteristica = clf.tree_.feature[nodo]
+    umbral = clf.tree_.threshold[nodo]
+    caracteristicas_camino.append((caracteristica, umbral))
+
+# Imprimir el camino desde la raíz hasta la predicción para X_test[0]
+print("Camino desde la raíz hasta la predicción para X_test[0]:")
+for caracteristica, umbral in caracteristicas_camino:
+    nombre_caracteristica = X.columns[caracteristica]
+    print(f"{nombre_caracteristica} <= {umbral}")
+
+
 
 # Evaluar la precisión del modelo
 print("Precisión:", metrics.accuracy_score(y_test, y_pred))
@@ -94,6 +113,15 @@ print (classification_report(y_test,y_pred))
 
 #Parte visual del arbol
 # Generar el archivo DOT
+# cantidad = len(X.columns)
+# #generar nombres genericos para las caracteristicas
+# nombresGenericos  = []
+# indicador = 0
+# for i in range(cantidad):
+#     indicador = indicador + 1
+#     nombresGenericos.append("Caracteristica "+ str(indicador) )
+
+    
 dot_data = export_graphviz(clf, out_file=None, feature_names=X.columns, class_names=y.unique(), filled=True, rounded=True)
 
 # Crear el objeto graphviz para visualizar el árbol
